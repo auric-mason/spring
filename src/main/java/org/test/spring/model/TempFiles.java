@@ -1,6 +1,6 @@
 package org.test.spring.model;
 
-import java.time.LocalDateTime;
+import java.io.File;
 
-public record TempFiles(String name, LocalDateTime start) {
+public record TempFiles(File tmpFile, Integer duration, Process process) {
 }
