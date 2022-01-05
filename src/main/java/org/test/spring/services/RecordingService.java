@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.test.spring.dao.RecordingsRepository;
 import org.test.spring.model.Recordings;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,6 +15,9 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class RecordingService {
+
+    @Autowired
+    private GchdService gchdService;
 
     @Autowired
     private RecordingsRepository recordingRepository;
@@ -24,9 +29,16 @@ public class RecordingService {
         CANCELED
     }
 
-    public String startRecording(Recordings recording)  {
+    public String startRecording(Recordings recording){
         recording.setCompleted(Status.STARTED.ordinal());
         recordingRepository.save(recording);
+        try {
+            File tmpFile = File.createTempFile("gchd_",".ts");
+            gchdService.beginRecording(tmpFile.getAbsolutePath(), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return "";//return the tmp file name
     }
 
